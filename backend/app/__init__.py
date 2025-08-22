@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
@@ -22,12 +22,30 @@ def create_app():
 
     # Register Middleware
     from .middleware.traffic_log import log_request
-    from .middleware.ddos_detector import detect_ddos
+    # from .middleware.ddos_detector import detect_ddos  # Your existing basic detector
+    from .middleware.advanced_ddos_detector import detect_ddos_advanced  # New advanced detector
 
     @app.before_request
     def before_request():
+        # Log the request first
         log_request()
-        detect_ddos()
+        # detect_ddos()
+        
+        # Run advanced DDoS detection
+        result = detect_ddos_advanced({
+            'rate_limiting': {'threshold': 100, 'window': 60},
+            'burst_detection': {'threshold': 15, 'window': 10},
+            'behavior_analysis': {'min_requests': 5},
+            'entropy_analysis': {'min_entropy': 1.5},
+            'progressive_detection': {'enabled': True},
+            'http_flood_detection': {'threshold': 30, 'window': 30}
+        })
+        
+        # Block if threat detected
+        if result.get('blocked', False):
+            # You can customize the response here
+            abort(429, description=f"Rate limited: {result.get('reason', 'DDoS protection triggered')}")
+
 
     # Import routes
     from .routes.routes import main as main_bp

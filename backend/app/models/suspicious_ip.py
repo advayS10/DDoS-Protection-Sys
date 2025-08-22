@@ -8,4 +8,8 @@ class SuspiciousIP(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ip_address = db.Column(db.String(100), nullable=False)
     reason = db.Column(db.String(255), nullable=False)
+    detected_at = db.Column(db.DateTime, default=datetime.now)
     timestamp = db.Column(db.DateTime, default=datetime.now)
+
+    def __repr__(self):
+        return f'<SuspiciousIP {self.ip_address}>'

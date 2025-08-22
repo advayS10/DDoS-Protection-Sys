@@ -1,5 +1,5 @@
 from flask import request
-from datetime import datetime, timedelta
+from datetime import datetime
 from ..models.suspicious_ip import SuspiciousIP
 from .. import db
 from ..redis_client import redis_client
@@ -24,6 +24,7 @@ def detect_ddos(threshold=100, window_seconds=60):
             suspicious = SuspiciousIP(
                 ip_address = ip,
                 reason = f"{count} requests in {window_seconds} seconds"
+                detected_at = datetime.now()
             )
             db.session.add(suspicious)
             db.session.commit()
