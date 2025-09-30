@@ -4,6 +4,15 @@ from ..services.get_suspicious_ip import get_suspicious_ips
 
 main = Blueprint("main", __name__)
 
+
+@main.route("/")
+def home():
+    return "Welcome to the app!"
+
+@main.route("/test")
+def test():
+    return "Normal request passed"
+
 @main.route('/api/logs', methods=['Get'])
 def get_logs():
     logs = get_latest_logs()
