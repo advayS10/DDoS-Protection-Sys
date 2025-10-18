@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Check</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: #f97316;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 24px;
+        }
+
+        h1 {
+            color: #111827;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 32px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .challenge-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .challenge-label {
+            color: #6b7280;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .challenge-question {
+            color: #111827;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e5e7eb;
+            border-radius: 50%;
+            border-top-color: #f97316;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+            outline: none;
+            margin-bottom: 16px;
+        }
+
+        input[type="number"]:focus {
+            border-color: #f97316;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #f97316;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            background: #ea580c;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .footer {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🛡️</div>
+        <h1>Security Check</h1>
+        <p class="subtitle">We need to verify that you're human before continuing</p>
+        
+        <div class="challenge-box" id="challengeBox">
+            <div class="challenge-label">Challenge</div>
+            <div class="challenge-question" id="challengeQuestion">
+                <span class="loading-spinner"></span> Loading challenge...
+            </div>
+        </div>
+        
+        <form id="challengeForm" style="display: none;">
+            <input 
+                type="number" 
+                id="answer" 
+                name="answer" 
+                placeholder="Enter your answer"
+                required
+                autofocus
+            >
+            
+            <button type="submit" id="submitBtn">
+                Verify
+            </button>
+        </form>
+        
+        <div id="message" class="message"></div>
+
+        <div class="footer">
+            Protected by DDoS Protection System
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('challengeForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const messageDiv = document.getElementById('message');
+        const answerInput = document.getElementById('answer');
+        const challengeQuestion = document.getElementById('challengeQuestion');
+
+        // Fetch the challenge when page loads
+        async function loadChallenge() {
+            try {
+                // Try to access any protected route to get the challenge
+                const response = await fetch('/api/verify-challenge', {
+                    method: 'GET',
+                });
+
+                // If we get a 429 or 403, it contains the challenge
+                if (response.status === 429 || response.status === 403) {
+                    const data = await response.json();
+                    if (data.challenge && data.challenge.question) {
+                        challengeQuestion.textContent = data.challenge.question;
+                        form.style.display = 'block';
+                        return;
+                    }
+                }
+
+                // Fallback: Try to get challenge from any route
+                const fallbackResponse = await fetch('/');
+                if (!fallbackResponse.ok) {
+                    const data = await fallbackResponse.json();
+                    if (data.challenge && data.challenge.question) {
+                        challengeQuestion.textContent = data.challenge.question;
+                        form.style.display = 'block';
+                        return;
+                    }
+                }
+
+                // If no challenge found, show a default message
+                challengeQuestion.textContent = 'No challenge available. You may already be verified.';
+                
+            } catch (error) {
+                console.error('Error loading challenge:', error);
+                challengeQuestion.textContent = 'Failed to load challenge. Please refresh the page.';
+            }
+        }
+
+        // Load challenge on page load
+        loadChallenge();
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const answer = answerInput.value;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Verifying...';
+            messageDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/verify-challenge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ answer: parseInt(answer) })
+                });
+                
+                const data = await response.json();
+                
+                messageDiv.style.display = 'block';
+                
+                if (data.success) {
+                    messageDiv.className = 'message success';
+                    messageDiv.textContent = '✓ ' + data.message;
+                    form.reset();
+                    
+                    // Redirect to home after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = '✗ ' + (data.error || 'Verification failed');
+                    
+                    // Reload challenge if available
+                    if (data.challenge && data.challenge.question) {
+                        challengeQuestion.textContent = data.challenge.question;
+                    }
+                }
+            } catch (error) {
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'message error';
+                messageDiv.textContent = '✗ Network error. Please try again.';
+                console.error('Error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Verify';
+            }
+        });
+    </script>
+</body>
+</html>

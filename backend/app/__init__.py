@@ -1,4 +1,4 @@
-from flask import Flask, abort, request, jsonify
+from flask import Flask, abort, request, jsonify, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -60,7 +60,9 @@ def create_app():
         log_request()
 
         # ✅ STEP 0: Skip protection for challenge verification endpoint
-        if request.path.rstrip('/') == '/api/verify-challenge':
+        CHALLENGE_EXEMPT_ROUTES = ['/challenge', '/api/verify-challenge', '/static']
+
+        if any(request.path.rstrip('/').startswith(route) for route in CHALLENGE_EXEMPT_ROUTES):
             return None
         
         ip = extract_client_ip()
@@ -69,12 +71,13 @@ def create_app():
         # This BLOCKS all requests until challenge is solved
         if has_pending_challenge(ip):
             challenge_data = get_challenge_response(ip)
-            return jsonify({
-                'error': 'Challenge Required',
-                'message': 'You must solve the challenge before continuing',
-                'challenge': challenge_data,
-                'verify_url': '/api/verify-challenge'
-            }), 429
+            return redirect(url_for('challenge_page'))
+            # return jsonify({
+            #     'error': 'Challenge Required',
+            #     'message': 'You must solve the challenge before continuing',
+            #     'challenge': challenge_data,
+            #     'verify_url': '/api/verify-challenge'
+            # }), 429
         
         # ✅ STEP 2: Log the request
         # log_request()
@@ -185,6 +188,15 @@ def create_app():
         #     # You can customize the response here
         #     abort(429, description=f"Rate limited: {result.get('reason', 'DDoS protection triggered')}")
 
+    @app.route('/challenge')
+    def challenge_page():
+        return render_template('challenge.html')
+
+    @app.route('/api/get-challenge', methods=['GET'])
+    def get_challenge_endpoint():
+        ip = extract_client_ip()
+        challenge_data = get_challenge_response(ip)
+        return jsonify(challenge_data), 200
 
     # ✅ ADD CHALLENGE VERIFICATION ENDPOINT
     @app.route('/api/verify-challenge', methods=['POST'])
