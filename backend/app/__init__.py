@@ -11,7 +11,11 @@ def create_app():
     load_dotenv()
 
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": ["http://localhost:5173", "http://localhost:5000"]
+        }
+    })
 
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI")  # main db
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -60,7 +64,7 @@ def create_app():
         log_request()
 
         # ✅ STEP 0: Skip protection for challenge verification endpoint
-        CHALLENGE_EXEMPT_ROUTES = ['/challenge', '/api/verify-challenge', '/static']
+        CHALLENGE_EXEMPT_ROUTES = ['/challenge', '/api/verify-challenge','/api/get-challenge','/api/dashboard', '/static']
 
         if any(request.path.rstrip('/').startswith(route) for route in CHALLENGE_EXEMPT_ROUTES):
             return None
@@ -230,7 +234,10 @@ def create_app():
     # Import routes
     from .routes.routes import main as main_bp
     from .routes.network_routes import network_bp
+    from .routes.dashboard_routes import dashboard_bp
     app.register_blueprint(main_bp)
     app.register_blueprint(network_bp)
+    app.register_blueprint(dashboard_bp)
+
 
     return app
