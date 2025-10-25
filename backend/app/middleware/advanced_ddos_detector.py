@@ -12,7 +12,7 @@ from ..redis_client import redis_client
 
 
 class DDoSDetector:
-    # easy
+    
     def __init__(self):
         self.algorithms = {
             'rate_limiting': self.rate_limiting_detection,
@@ -23,7 +23,7 @@ class DDoSDetector:
             'geographic_analysis': self.geographic_analysis,
             'http_flood_detection': self.http_flood_detection
         }
-    # easy
+    
     def get_client_ip(self) -> str:
         """Extract real client IP handling various proxy configurations"""
         proxy_headers = [
@@ -42,7 +42,7 @@ class DDoSDetector:
         
         return request.remote_addr or 'unknown'
     
-    # most advance
+    
     def detect_threats(self, config: Dict = None) -> Dict:
         """Main detection function that runs all algorithms"""
         if config is None:
@@ -80,7 +80,7 @@ class DDoSDetector:
         
         return {'ip': ip, 'blocked': False, 'results': results}
     
-    # moderate
+    
     def rate_limiting_detection(self, ip: str, config: Dict) -> Dict:
         """Basic rate limiting - requests per time window"""
         threshold = config.get('threshold', 100)
@@ -100,7 +100,7 @@ class DDoSDetector:
             'reason': f"Rate limit exceeded: {count}/{threshold} requests in {window}s"
         }
     
-    # moderate
+    
     def burst_detection(self, ip: str, config: Dict) -> Dict:
         """Detect sudden bursts of traffic"""
         threshold = config.get('threshold', 20)
@@ -134,7 +134,7 @@ class DDoSDetector:
             'reason': 'Geographic analysis disabled'
         }
     
-    # moderate
+    
     def http_flood_detection(self, ip: str, config: Dict) -> Dict:
         """Detect HTTP flood attacks"""
         threshold = config.get('threshold', 50)
@@ -167,12 +167,12 @@ class DDoSDetector:
             'reason': f"HTTP flood: {count} {method} requests to {path} in {window}s"
         }
     
-    # easy
+    
     def is_already_flagged(self, ip: str) -> bool:
         """Check if IP is already flagged as suspicious"""
         return SuspiciousIP.query.filter_by(ip_address=ip).first() is not None
     
-    # easy
+    
     def flag_suspicious_ip(self, ip: str, reason: str, algorithm: str):
         """Flag IP as suspicious in database"""
         redis_client.set(f"suspicious:{ip}", f"[{algorithm}] {reason}", ex=300) # 5 minutes TTL
@@ -188,154 +188,7 @@ class DDoSDetector:
         #         db.session.commit()
         #     except Exception as e:
         #         db.session.rollback()
-        #         print(f"Error flagging IP {ip}: {e}")
-    
-    # advance - Future Scope
-    # def behavior_analysis(self, ip: str, config: Dict) -> Dict:
-    #     """Analyze request patterns and behavior"""
-    #     min_requests = config.get('min_requests', 10)
-        
-    #     metadata = {
-    #         'timestamp': time.time(),
-    #         'user_agent': request.headers.get('User-Agent', ''),
-    #         'referer': request.headers.get('Referer', ''),
-    #         'path': request.path,
-    #         'method': request.method,
-    #         'content_length': request.content_length or 0
-    #     }
-        
-    #     key = f"behavior:{ip}"
-    #     pipe = redis_client.pipeline()
-    #     pipe.lpush(key, json.dumps(metadata))
-    #     pipe.ltrim(key, 0, 99)
-    #     pipe.llen(key)
-    #     pipe.expire(key, 3600)
-        
-    #     results = pipe.execute()
-    #     request_count = results[2]
-        
-    #     if request_count < min_requests:
-    #         return {'is_threat': False, 'reason': 'Insufficient data'}
-        
-    #     recent_requests = redis_client.lrange(key, 0, min_requests - 1)
-    #     requests_data = [json.loads(req) for req in recent_requests]
-        
-    #     suspicious_patterns = self.analyze_request_patterns(requests_data)
-        
-    #     is_threat = suspicious_patterns['score'] > 0.7
-    #     return {
-    #         'is_threat': is_threat,
-    #         'patterns': suspicious_patterns,
-    #         'reason': f"Suspicious behavior: {', '.join(suspicious_patterns['reasons'])}"
-    #     }
-    
-    # advance - part of behaviour analysis
-    # def analyze_request_patterns(self, requests: List[Dict]) -> Dict:
-    #     """Analyze request patterns for suspicious behavior"""
-    #     if not requests:
-    #         return {'score': 0, 'reasons': []}
-        
-    #     patterns = {'score': 0, 'reasons': []}
-        
-    #     # Check for identical user agents
-    #     user_agents = [req.get('user_agent', '') for req in requests]
-    #     if len(set(user_agents)) == 1 and user_agents[0] != '':
-    #         patterns['score'] += 0.3
-    #         patterns['reasons'].append('Identical user agents')
-        
-    #     # Check for missing user agents
-    #     empty_ua_count = sum(1 for ua in user_agents if not ua)
-    #     if empty_ua_count > len(requests) * 0.5:
-    #         patterns['score'] += 0.2
-    #         patterns['reasons'].append('Missing user agents')
-        
-    #     # Check for rapid sequential requests
-    #     timestamps = [req['timestamp'] for req in requests]
-    #     if len(timestamps) > 1:
-    #         intervals = [timestamps[i] - timestamps[i+1] for i in range(len(timestamps)-1)]
-    #         avg_interval = sum(intervals) / len(intervals)
-    #         if avg_interval < 0.1:
-    #             patterns['score'] += 0.4
-    #             patterns['reasons'].append('Rapid sequential requests')
-        
-    #     return patterns
-    
-    # advance
-    # def entropy_analysis(self, ip: str, config: Dict) -> Dict:
-    #     """Analyze entropy of request parameters"""
-    #     min_entropy = config.get('min_entropy', 2.0)
-        
-    #     query_params = str(request.args)
-    #     user_agent = request.headers.get('User-Agent', '')
-    #     referer = request.headers.get('Referer', '')
-        
-    #     combined_data = query_params + user_agent + referer
-        
-    #     if not combined_data:
-    #         return {'is_threat': False, 'reason': 'No data for entropy analysis'}
-        
-    #     entropy = self.calculate_entropy(combined_data)
-    #     is_threat = entropy < min_entropy
-        
-    #     return {
-    #         'is_threat': is_threat,
-    #         'entropy': entropy,
-    #         'threshold': min_entropy,
-    #         'reason': f"Low entropy detected: {entropy:.2f} (threshold: {min_entropy})"
-    #     }
-    
-    # # advance
-    # def calculate_entropy(self, data: str) -> float:
-    #     """Calculate Shannon entropy of a string"""
-    #     if not data:
-    #         return 0
-        
-    #     char_counts = defaultdict(int)
-    #     for char in data:
-    #         char_counts[char] += 1
-        
-    #     entropy = 0
-    #     length = len(data)
-        
-    #     for count in char_counts.values():
-    #         probability = count / length
-    #         entropy -= probability * math.log2(probability)
-        
-    #     return entropy
-    
-    # advance - Too niche
-    # def progressive_detection(self, ip: str, config: Dict) -> Dict:
-    #     """Progressive penalty system based on historical behavior"""
-    #     key = f"progressive:{ip}"
-        
-    #     penalty_level = redis_client.get(key)
-    #     penalty_level = int(penalty_level) if penalty_level else 0
-        
-    #     base_threshold = 100
-    #     threshold = max(10, base_threshold - (penalty_level * 20))
-    #     window = 60
-        
-    #     rate_key = f"prog_rate:{ip}"
-    #     count = redis_client.incr(rate_key)
-        
-    #     if count == 1:
-    #         redis_client.expire(rate_key, window)
-        
-    #     is_threat = count > threshold
-        
-    #     if is_threat:
-    #         redis_client.incr(key)
-    #         redis_client.expire(key, 3600)
-        
-    #     return {
-    #         'is_threat': is_threat,
-    #         'count': count,
-    #         'threshold': threshold,
-    #         'penalty_level': penalty_level,
-    #         'reason': f"Progressive limit: {count}/{threshold} (penalty level: {penalty_level})"
-    #     }
-    
-    
+        #         print(f"Error flagging IP {ip}: {e}")    
 
 
 # Global detector instance

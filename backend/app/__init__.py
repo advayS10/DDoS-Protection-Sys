@@ -139,59 +139,6 @@ def create_app():
         # ✅ All checks passed, allow request
         return None
 
-        # # Check if IP is rate limited
-        # '''
-        # Some Error here - 24/9/2025. Time - 8:42
-        # '''
-        # # if is_rate_limited(ip):
-        # #     mark_suspicious(ip, "Rate limit exceeded")
-
-        # # 1. Detect suspicious behavior
-        # # Run advanced DDoS detection
-        # result = detect_ddos_advanced({
-        #     'rate_limiting': {'threshold': 100, 'window': 60},
-        #     'burst_detection': {'threshold': 15, 'window': 10},
-        #     'http_flood_detection': {'threshold': 30, 'window': 30}
-        # })
-
-        # # Step 2: If suspicious, mark IP
-        # if result.get('blocked', False):
-        #     mark_suspicious(ip, "DDoS activity detected")
-
-        # if is_suspicious(ip) or is_blocked(ip):
-        #     client_response = request.args.get("challenge")
-        #     should_block, status, message = handle_suspicious_ip(ip, client_response)
-            
-        #     if should_block:
-        #         abort(status, description=message)
-
-        # Step 3: Mitigation for suspicious IPs
-        # if is_blocked(ip):
-        #     client_response = request.args.get("challenge")
-        #     if is_verified(ip):
-        #         unblock_ip(ip)
-        #     elif client_response:
-        #         if verify_challenge(ip, int(client_response)):
-        #             unblock_ip(ip)
-        #         else:
-        #             abort(403, description="Blocked: Challenge failed")
-        #     else:
-        #         question = issue_challenge(ip)
-        #         abort(403, description=f"Blocked: Solve challenge -> {question}")
-
-
-        # # 2. Only if suspicious, run mitigation
-        # if result.get('blocked', False):
-        #     client_response = request.args.get("challenge")  # optional challenge answer
-        #     status, message = handle_request(ip, client_response)
-        #     if status != 200:
-        #         abort(status, description=message)
-        
-        # # Block if threat detected
-        # if result.get('blocked', False):
-        #     # You can customize the response here
-        #     abort(429, description=f"Rate limited: {result.get('reason', 'DDoS protection triggered')}")
-
     @app.route('/challenge')
     def challenge_page():
         return render_template('challenge.html')
@@ -202,7 +149,7 @@ def create_app():
         challenge_data = get_challenge_response(ip)
         return jsonify(challenge_data), 200
 
-    # ✅ ADD CHALLENGE VERIFICATION ENDPOINT
+    # ADD CHALLENGE VERIFICATION ENDPOINT
     @app.route('/api/verify-challenge', methods=['POST'])
     def verify_challenge_endpoint():
         """Endpoint to verify challenge answers"""
