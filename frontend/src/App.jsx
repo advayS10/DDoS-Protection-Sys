@@ -1,8 +1,11 @@
 import Dashboard from './components/Dashboard'
+import HomePage from './components/HomePage'
+
 
 function App() {
     return (
-        <Dashboard/>
+        // <Dashboard/>
+        <HomePage />
     )
 }
 
