@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function HomePage() {
   const [scrollY, setScrollY] = useState(0);
@@ -120,11 +121,9 @@ export default function HomePage() {
             Features
           </a>
           
-          <button 
-            className="btn-gradient text-black px-8 py-3 text-base font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-500/40"
-          >
-            Get Started
-          </button>
+          <Link to="/dashboard" className="btn-gradient text-black px-8 py-3 text-base font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-500/40 inline-block">
+             Get Started
+          </Link>
         </nav>
       </header>
 
