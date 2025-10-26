@@ -20,7 +20,7 @@ export default function HomePage() {
     {
       icon: 'https://cdn-icons-png.flaticon.com/512/1041/1041916.png',
       title: 'Lightning Fast Response',
-      description: 'Automated incident response system that acts in milliseconds to contain and eliminate security threats.',
+      description: 'Automated incident response system that acts quickly to contain and eliminate security threats.',
     },
     {
       icon: 'https://cdn-icons-png.flaticon.com/512/2920/2920349.png',
@@ -28,9 +28,9 @@ export default function HomePage() {
       description: 'Comprehensive dashboard with actionable insights and detailed analytics of your security posture.',
     },
     {
-      icon: 'https://cdn-icons-png.flaticon.com/512/3179/3179068.png',
+      icon: 'https://cdn-icons-png.flaticon.com/512/3043/3043822.png',
       title: 'Network Protection',
-      description: 'Multi-layered network security with firewall protection, DDoS mitigation, and intrusion prevention.',
+      description: 'Multi-layered network security with DDoS mitigation, and intrusion prevention.',
     },
   ];
 
