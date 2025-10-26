@@ -137,6 +137,12 @@ export default function CWatchLandingPage() {
           >
             Features
           </a>
+          <a 
+            href="#resources" 
+            className="text-white text-base font-medium transition-colors duration-300 hover:text-cyan-400 cursor-pointer"
+          >
+            Resources
+          </a>
           <Link 
             to="/dashboard"
             className="btn-gradient text-black px-8 py-3 text-base font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-500/40 inline-block text-center"
@@ -165,6 +171,51 @@ export default function CWatchLandingPage() {
         </div>
         
         {/* Hero Content */}
+        <div className="text-center z-10 max-w-5xl px-5 animate-fadeInUp">
+          {/* Shield Icon */}
+          <div className="mb-10 flex justify-center">
+            <div className="relative animate-pulse-slow">
+              <svg 
+                className="w-48 h-48 drop-shadow-2xl" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style={{stopColor: '#00ffaa', stopOpacity: 1}} />
+                    <stop offset="100%" style={{stopColor: '#00ccff', stopOpacity: 1}} />
+                  </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+                <path 
+                  d="M12 2L4 6V12C4 16.55 7.16 20.74 12 22C16.84 20.74 20 16.55 20 12V6L12 2Z" 
+                  fill="url(#shieldGradient)" 
+                  filter="url(#glow)"
+                  opacity="0.9"
+                />
+                <path 
+                  d="M10 14L8 12L7 13L10 16L17 9L16 8L10 14Z" 
+                  fill="#000000" 
+                  opacity="0.8"
+                />
+              </svg>
+              {/* Glowing rings */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-52 h-52 border-2 border-cyan-400 rounded-full opacity-20 animate-ping-slow"></div>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-60 h-60 border border-cyan-400 rounded-full opacity-10 animate-ping-slower"></div>
+              </div>
+            </div>
+          </div>
+          </div>
         <div className="text-center z-10 max-w-4xl px-5 animate-fadeInUp">
           <h1 className="text-7xl font-bold mb-5 text-gradient leading-tight">
             Advanced Cybersecurity Solutions
@@ -223,6 +274,53 @@ export default function CWatchLandingPage() {
           ))}
         </div>
       </section>
+      {/* Resources Section */}
+<section id = "resources" className="py-32 px-12 relative z-10">
+  <h2 className="text-5xl font-bold mb-5 text-center text-gradient">
+    Resources & Insights
+  </h2>
+  <p className="text-xl text-gray-400 text-center mb-20 max-w-3xl mx-auto">
+    Stay informed with our latest research and security best practices
+  </p>
+  
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl mx-auto">
+    {/* DDoS Best Practices Card */}
+    <div className="card-gradient border border-gradient rounded-3xl p-10 transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl hover:shadow-cyan-500/20 hover:border-cyan-400/50 cursor-pointer">
+      <div className="mb-6">
+        <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">Whitepaper</span>
+      </div>
+      <h3 className="text-2xl font-bold mb-4 text-white">
+        Best Practices for Mitigating DDoS Attacks
+      </h3>
+      <p className="text-base text-gray-400 leading-relaxed mb-6">
+        Learn how to defend against rapidly evolving distributed denial-of-service (DDoS) threats and address vulnerabilities at every layer.
+      </p>
+      <a href="https://www.cisa.gov/sites/default/files/publications/understanding-and-responding-to-ddos-attacks_508c.pdf" target="_blank" rel="noopener noreferrer">
+  <button className="btn-gradient text-black px-6 py-3 text-sm font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg">
+    Get the Whitepaper
+  </button>
+</a>
+    </div>
+
+    {/* DDoS Activity Report Card */}
+    <div className="card-gradient border border-gradient rounded-3xl p-10 transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl hover:shadow-cyan-500/20 hover:border-cyan-400/50 cursor-pointer">
+      <div className="mb-6">
+        <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">Annual Report</span>
+      </div>
+      <h3 className="text-2xl font-bold mb-4 text-white">
+        DDoS Activity Report
+      </h3>
+      <p className="text-base text-gray-400 leading-relaxed mb-6">
+        Comprehensive analysis of DDoS attack trends, patterns, and emerging threats observed throughout the year. Essential reading for security professionals.
+      </p>
+      <a href="https://blog.cloudflare.com/ddos-threat-report-for-2025-q1/" target="_blank" rel="noopener noreferrer">
+  <button className="btn-gradient text-black px-6 py-3 text-sm font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg">
+    Check Report
+  </button>
+</a>
+    </div>
+  </div>
+</section>
       {/* Footer */}
       <footer className="relative z-10 py-8 border-t border-gradient">
         <div className="max-w-7xl mx-auto px-4 text-center">
