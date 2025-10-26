@@ -9,11 +9,30 @@ from typing import Dict, List, Tuple, Optional
 from ..models.suspicious_ip import SuspiciousIP
 from .. import db
 from ..redis_client import redis_client
+from ..ml_components.ml_predictor import MLPredictor
 
 
 class DDoSDetector:
     
     def __init__(self):
+
+        # Initialize ML predictor
+        try:
+            self.ml_predictor = MLPredictor()
+            self.ml_enabled = self.ml_predictor.ready
+
+            print(self.ml_predictor.ready, "Testing enabling")
+            
+            if self.ml_enabled:
+                print("ML Detection: ENABLED")
+            else:
+                print("ML Detection: DISABLED (models not loaded)")
+        except Exception as e:
+            print(f"ML initialization error: {e}")
+            self.ml_predictor = None
+            self.ml_enabled = False
+
+
         self.algorithms = {
             'rate_limiting': self.rate_limiting_detection,
             'burst_detection': self.burst_detection,
@@ -23,6 +42,13 @@ class DDoSDetector:
             'geographic_analysis': self.geographic_analysis,
             'http_flood_detection': self.http_flood_detection
         }
+
+        # Add ML if available
+        if self.ml_enabled:
+            self.algorithms['ml_prediction'] = self.ml_prediction
+            print("✅ Total algorithms: 4 (including ML)")
+        else:
+            print("✅ Total algorithms: 3 (rule-based only)")
     
     def get_client_ip(self) -> str:
         """Extract real client IP handling various proxy configurations"""
@@ -53,7 +79,8 @@ class DDoSDetector:
                 # 'entropy_analysis': {'min_entropy': 2.0},
                 # 'progressive_detection': {'enabled': True},
                 'geographic_analysis': {'enabled': False},  # Disabled by default
-                'http_flood_detection': {'threshold': 50, 'window': 30}
+                'http_flood_detection': {'threshold': 50, 'window': 30},
+                'ml_prediction': {'enabled': True,'threshold': 0.7}
             }
         
         results = {}
@@ -62,6 +89,14 @@ class DDoSDetector:
         # Skip if already flagged as suspicious
         if self.is_already_flagged(ip):
             return {'ip': ip, 'blocked': True, 'reason': 'Already flagged', 'results': {}}
+        
+        # Track request for ML (if enabled)
+        if self.ml_enabled:
+            try:
+                packet_size = self._estimate_packet_size()
+                self.ml_predictor.feature_calc.tracker.track_request(ip, packet_size)
+            except Exception as e:
+                print(f"Tracking error: {e}")
         
         # Run all detection algorithms
         for algo_name, algo_func in self.algorithms.items():
@@ -189,6 +224,67 @@ class DDoSDetector:
         #     except Exception as e:
         #         db.session.rollback()
         #         print(f"Error flagging IP {ip}: {e}")    
+
+    def ml_prediction(self, ip: str, config: Dict) -> Dict:
+        """ML-based detection using Random Forest + Neural Network"""
+        if not self.ml_enabled:
+            return {
+                'is_threat': False,
+                'reason': 'ML not available'
+            }
+        
+        try:
+            threshold = config.get('threshold', 0.7)
+            result = self.ml_predictor.predict(ip, threshold)
+            
+            return {
+                'is_threat': result['is_threat'],
+                'confidence': result['confidence'],
+                'predictions': result.get('predictions', {}),
+                'reason': f"ML detected DDoS with {result['confidence']:.1%} confidence"
+            }
+            
+        except Exception as e:
+            return {
+                'is_threat': False,
+                'error': str(e),
+                'reason': f'ML prediction error: {str(e)}'
+            }
+
+    def _is_already_blocked(self, ip: str) -> bool:
+        """Check if IP is already blocked"""
+        return redis_client.exists(f"blocked:{ip}")
+    
+    def _block_ip(self, ip: str, reason: str, algorithm: str):
+        """Block IP in Redis"""
+        redis_client.setex(
+            f"blocked:{ip}",
+            300,  # 5 minutes
+            f"[{algorithm}] {reason}"
+        )
+        print(f"🚫 BLOCKED: {ip} - {reason}")
+    
+    def _estimate_packet_size(self) -> int:
+        """Estimate current request size"""
+        size = 0
+        
+        # Headers
+        for key, value in request.headers.items():
+            size += len(key) + len(value)
+        
+        # Path + query
+        size += len(request.path)
+        if request.query_string:
+            size += len(request.query_string)
+        
+        # Body
+        if request.content_length:
+            size += request.content_length
+        
+        # HTTP overhead
+        size += 100
+        
+        return max(size, 200)
 
 
 # Global detector instance

@@ -206,7 +206,7 @@
         async function loadChallenge() {
             try {
                 // Try to access any protected route to get the challenge
-                const response = await fetch('/api/verify-challenge', {
+                const response = await fetch('/api/get-challenge', {
                     method: 'GET',
                 });
 
