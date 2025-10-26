@@ -100,27 +100,48 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
-          <RefreshCw className="w-12 h-12 animate-spin text-orange-500 mx-auto mb-4" />
-          <p className="text-gray-600">Loading dashboard...</p>
+          <RefreshCw className="w-12 h-12 animate-spin mx-auto mb-4" style={{color: '#00ffaa'}} />
+          <p className="text-gray-400">Loading dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black text-white">
+      <style>
+        {`
+          .text-gradient {
+            background: linear-gradient(135deg, #00ffaa 0%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+          }
+          .btn-gradient {
+            background: linear-gradient(135deg, #00ffaa 0%, #00ccff 100%);
+          }
+          .card-gradient {
+            background: linear-gradient(135deg, rgba(0, 255, 170, 0.05) 0%, rgba(0, 204, 255, 0.05) 100%);
+          }
+          .border-gradient {
+            border-color: rgba(0, 255, 170, 0.2);
+          }
+        `}
+      </style>
+
+      <header className="bg-black bg-opacity-95 backdrop-blur-lg shadow-lg border-b border-gradient">
+        <div className="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Shield className="w-8 h-8 text-orange-500" />
-              <h1 className="text-2xl font-bold text-gray-900">CWatch Protection Dashboard</h1>
+              <Shield className="w-8 h-8" style={{color: '#00ffaa'}} />
+              <h1 className="text-3xl font-bold text-gradient">CWatch Protection Dashboard</h1>
             </div>
             <button
               onClick={fetchData}
-              className="flex items-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
+              className="flex items-center space-x-2 px-6 py-3 btn-gradient text-black rounded-full hover:scale-105 transition-all duration-300 font-bold shadow-lg"
+              style={{boxShadow: '0 10px 30px rgba(0, 255, 170, 0.3)'}}
             >
               <RefreshCw className="w-4 h-4" />
               <span>Refresh</span>
@@ -135,62 +156,59 @@ export default function Dashboard() {
             title="Total Requests"
             value={stats?.total_requests || 0}
             subtitle={`${stats?.requests_today || 0} today`}
-            icon={<Activity className="w-6 h-6 text-blue-500" />}
-            color="blue"
+            icon={<Activity className="w-6 h-6" style={{color: '#00ccff'}} />}
           />
           <StatCard
             title="Requests/Second"
             value={stats?.requests_per_second || 0}
             subtitle={`${stats?.requests_hour || 0} last hour`}
-            icon={<Activity className="w-6 h-6 text-green-500" />}
-            color="green"
+            icon={<Activity className="w-6 h-6" style={{color: '#00ffaa'}} />}
           />
           <StatCard
             title="Suspicious IPs"
             value={stats?.suspicious_ips || 0}
             subtitle="Need attention"
-            icon={<AlertTriangle className="w-6 h-6 text-yellow-500" />}
-            color="yellow"
+            icon={<AlertTriangle className="w-6 h-6" style={{color: '#ffaa00'}} />}
           />
           <StatCard
             title="Blocked IPs"
             value={stats?.blocked_ips || 0}
             subtitle="Currently blocked"
-            icon={<Ban className="w-6 h-6 text-red-500" />}
-            color="red"
+            icon={<Ban className="w-6 h-6" style={{color: '#ff4444'}} />}
           />
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Traffic (Last 24 Hours)</h2>
+        <div className="card-gradient rounded-3xl border border-gradient p-8 mb-8 shadow-xl">
+          <h2 className="text-2xl font-bold text-gradient mb-6">Traffic (Last 24 Hours)</h2>
           {trafficData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={trafficData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis 
                   dataKey="time" 
-                  stroke="#6b7280"
-                  tick={{ fontSize: 12 }}
+                  stroke="#a0a0a0"
+                  tick={{ fontSize: 12, fill: '#a0a0a0' }}
                 />
                 <YAxis 
-                  stroke="#6b7280"
-                  tick={{ fontSize: 12 }}
+                  stroke="#a0a0a0"
+                  tick={{ fontSize: 12, fill: '#a0a0a0' }}
                   allowDecimals={false}
                 />
                 <Tooltip 
                   contentStyle={{
-                    backgroundColor: 'white',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '6px'
+                    backgroundColor: '#1a1a1a',
+                    border: '1px solid rgba(0, 255, 170, 0.3)',
+                    borderRadius: '12px',
+                    color: '#ffffff'
                   }}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="requests" 
-                  stroke="#f97316" 
-                  strokeWidth={2}
-                  dot={{ fill: '#f97316', r: 3 }}
-                  activeDot={{ r: 5 }}
+                  stroke="#00ffaa" 
+                  strokeWidth={3}
+                  dot={{ fill: '#00ffaa', r: 4 }}
+                  activeDot={{ r: 6, fill: '#00ccff' }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -201,35 +219,35 @@ export default function Dashboard() {
           )}
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="border-b">
-            <nav className="flex space-x-8 px-6" aria-label="Tabs">
+        <div className="card-gradient rounded-3xl border border-gradient shadow-xl overflow-hidden">
+          <div className="border-b border-gradient">
+            <nav className="flex space-x-8 px-8" aria-label="Tabs">
               <button
                 onClick={() => setActiveTab('suspicious')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm transition ${
+                className={`py-5 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${
                   activeTab === 'suspicious'
-                    ? 'border-orange-500 text-orange-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-cyan-400 text-gradient'
+                    : 'border-transparent text-gray-500 hover:text-gray-300'
                 }`}
               >
                 Suspicious IPs ({suspiciousIPs.length})
               </button>
               <button
                 onClick={() => setActiveTab('blocked')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm transition ${
+                className={`py-5 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${
                   activeTab === 'blocked'
-                    ? 'border-orange-500 text-orange-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-cyan-400 text-gradient'
+                    : 'border-transparent text-gray-500 hover:text-gray-300'
                 }`}
               >
                 Blocked IPs ({blockedIPs.length})
               </button>
               <button
                 onClick={() => setActiveTab('activity')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm transition ${
+                className={`py-5 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${
                   activeTab === 'activity'
-                    ? 'border-orange-500 text-orange-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-cyan-400 text-gradient'
+                    : 'border-transparent text-gray-500 hover:text-gray-300'
                 }`}
               >
                 Recent Activity
@@ -237,7 +255,7 @@ export default function Dashboard() {
             </nav>
           </div>
 
-          <div className="p-6">
+          <div className="p-8">
             {activeTab === 'suspicious' && (
               <IPTable
                 ips={suspiciousIPs}
@@ -262,24 +280,17 @@ export default function Dashboard() {
   );
 }
 
-function StatCard({ title, value, subtitle, icon, color }) {
-  const colorClasses = {
-    blue: 'bg-blue-50',
-    green: 'bg-green-50',
-    yellow: 'bg-yellow-50',
-    red: 'bg-red-50'
-  };
-
+function StatCard({ title, value, subtitle, icon }) {
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
+    <div className="card-gradient rounded-3xl border border-gradient p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/20 hover:border-cyan-400/50 cursor-pointer">
       <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
+        <div className="p-3 rounded-xl" style={{background: 'rgba(0, 255, 170, 0.1)'}}>
           {icon}
         </div>
       </div>
-      <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
-      <p className="text-sm font-medium text-gray-600 mt-1">{title}</p>
-      <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+      <h3 className="text-3xl font-bold text-white mb-2">{value}</h3>
+      <p className="text-sm font-medium text-gray-400 mb-1">{title}</p>
+      <p className="text-xs text-gray-500">{subtitle}</p>
     </div>
   );
 }
@@ -295,47 +306,47 @@ function IPTable({ ips, type, onBlock, onUnblock }) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
+      <table className="min-w-full">
         <thead>
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <tr className="border-b border-gradient">
+            <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
               IP Address
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
               Reason
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
               Time
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
               Action
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="divide-y divide-gray-800">
           {ips.map((ip) => (
-            <tr key={ip.id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+            <tr key={ip.id} className="hover:bg-black hover:bg-opacity-30 transition-colors duration-200">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                 {ip.ip}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                 {ip.reason}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                 {new Date(ip.detected_at || ip.blocked_at).toLocaleString()}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm">
                 {type === 'suspicious' ? (
                   <button
                     onClick={() => onBlock(ip.ip)}
-                    className="px-4 py-2 bg-red-500 text-white text-xs font-medium rounded hover:bg-red-600 transition"
+                    className="px-5 py-2 bg-red-600 text-white text-xs font-bold rounded-full hover:bg-red-700 hover:scale-105 transition-all duration-300 shadow-lg"
                   >
                     Block
                   </button>
                 ) : (
                   <button
                     onClick={() => onUnblock(ip.ip)}
-                    className="px-4 py-2 bg-green-500 text-white text-xs font-medium rounded hover:bg-green-600 transition"
+                    className="px-5 py-2 text-black text-xs font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-lg btn-gradient"
                   >
                     Unblock
                   </button>
@@ -361,29 +372,29 @@ function ActivityList({ activities }) {
   return (
     <div className="space-y-4">
       {activities.map((activity, index) => (
-        <div key={index} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
-          <div className={`p-2 rounded-full ${
-            activity.status === 'blocked' ? 'bg-red-100' : 'bg-yellow-100'
+        <div key={index} className="flex items-start space-x-4 p-5 rounded-2xl border border-gradient hover:border-cyan-400/50 transition-all duration-300" style={{background: 'rgba(0, 0, 0, 0.3)'}}>
+          <div className={`p-3 rounded-full ${
+            activity.status === 'blocked' ? 'bg-red-900 bg-opacity-30' : 'bg-yellow-900 bg-opacity-30'
           }`}>
             {activity.status === 'blocked' ? (
-              <Ban className="w-4 h-4 text-red-600" />
+              <Ban className="w-5 h-5 text-red-500" />
             ) : (
-              <AlertTriangle className="w-4 h-4 text-yellow-600" />
+              <AlertTriangle className="w-5 h-5 text-yellow-500" />
             )}
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-gray-900">{activity.ip}</p>
-            <p className="text-sm text-gray-600">{activity.reason}</p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-sm font-bold text-white">{activity.ip}</p>
+            <p className="text-sm text-gray-400 mt-1">{activity.reason}</p>
+            <p className="text-xs text-gray-500 mt-2">
               {new Date(activity.time).toLocaleString()}
             </p>
           </div>
-          <span className={`px-2 py-1 text-xs font-medium rounded ${
+          <span className={`px-3 py-1 text-xs font-bold rounded-full ${
             activity.status === 'blocked'
-              ? 'bg-red-100 text-red-800'
+              ? 'bg-red-900 bg-opacity-40 text-red-300'
               : activity.status === 'verified'
-              ? 'bg-green-100 text-green-800'
-              : 'bg-yellow-100 text-yellow-800'
+              ? 'bg-green-900 bg-opacity-40 text-green-300'
+              : 'bg-yellow-900 bg-opacity-40 text-yellow-300'
           }`}>
             {activity.status}
           </span>

@@ -1,12 +1,16 @@
-import Dashboard from './components/Dashboard'
-import HomePage from './components/HomePage'
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Dashboard from "./components/Dashboard";
+import HomePage from "./components/HomePage";
 
 function App() {
-    return (
-        // <Dashboard/>
-        <HomePage />
-    )
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
