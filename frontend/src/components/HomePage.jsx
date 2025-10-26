@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-export default function HomePage() {
+export default function CWatchLandingPage() {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function HomePage() {
     {
       icon: 'https://cdn-icons-png.flaticon.com/512/1041/1041916.png',
       title: 'Lightning Fast Response',
-      description: 'Automated incident response system that acts quickly to contain and eliminate security threats.',
+      description: 'Automated incident response system that acts in milliseconds to contain and eliminate security threats.',
     },
     {
       icon: 'https://cdn-icons-png.flaticon.com/512/2920/2920349.png',
@@ -29,14 +29,30 @@ export default function HomePage() {
       description: 'Comprehensive dashboard with actionable insights and detailed analytics of your security posture.',
     },
     {
-      icon: 'https://cdn-icons-png.flaticon.com/512/3043/3043822.png',
+      icon: 'https://cdn-icons-png.flaticon.com/512/2910/2910791.png',
       title: 'Network Protection',
-      description: 'Multi-layered network security with DDoS mitigation, and intrusion prevention.',
+      description: 'Multi-layered network security with firewall protection, DDoS mitigation, and intrusion prevention.',
     },
   ];
 
   return (
-    <div className="bg-black text-white font-sans overflow-x-hidden">
+    <div className="bg-black text-white font-sans overflow-x-hidden relative">
+      {/* Animated Background for entire page */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        {[...Array(30)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-30 animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 10}s`,
+              animationDuration: `${15 + Math.random() * 10}s`,
+            }}
+          />
+        ))}
+      </div>
+
       <style>
         {`
           html {
@@ -97,6 +113,7 @@ export default function HomePage() {
       </style>
 
       {/* Header */}
+      {/* Header */}
       <header 
         className={`fixed top-0 w-full z-50 px-12 py-5 flex justify-between items-center transition-all duration-300 ${
           scrollY > 50 
@@ -109,7 +126,7 @@ export default function HomePage() {
         </div>
         <nav className="flex gap-10 items-center">
           <a 
-            href="#about"
+            href="#about" 
             className="text-white text-base font-medium transition-colors duration-300 hover:text-cyan-400 cursor-pointer"
           >
             About
@@ -120,21 +137,23 @@ export default function HomePage() {
           >
             Features
           </a>
-          
-          <Link to="/dashboard" className="btn-gradient text-black px-8 py-3 text-base font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-500/40 inline-block">
-             Get Started
+          <Link 
+            to="/dashboard"
+            className="btn-gradient text-black px-8 py-3 text-base font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-500/40 inline-block text-center"
+          >
+            Get Started
           </Link>
         </nav>
       </header>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center relative overflow-hidden hero-gradient">
-        {/* Animated Background */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-          {[...Array(20)].map((_, i) => (
+      <section className="min-h-screen flex items-center justify-center relative overflow-hidden z-10" style={{background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)'}}>
+        {/* Additional floating particles for hero section */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          {[...Array(25)].map((_, i) => (
             <div
-              key={i}
-              className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-30 animate-float"
+              key={`hero-${i}`}
+              className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-40 animate-float"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
@@ -158,7 +177,7 @@ export default function HomePage() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-32 px-12 relative">
+      <section id="about" className="py-32 px-12 relative z-10">
         <h2 className="text-5xl font-bold mb-5 text-center text-gradient">
           About CWatch
         </h2>
@@ -175,7 +194,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-32 px-12 relative">
+      <section id="features" className="py-32 px-12 relative z-10">
         <h2 className="text-5xl font-bold mb-5 text-center text-gradient">
           Comprehensive Security Features
         </h2>
@@ -204,6 +223,14 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+      {/* Footer */}
+      <footer className="relative z-10 py-8 border-t border-gradient">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-gray-500 text-sm">
+            © 2025 CWatch. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
