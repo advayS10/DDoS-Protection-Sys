@@ -64,7 +64,7 @@ def create_app():
         log_request()
 
         # ✅ STEP 0: Skip protection for challenge verification endpoint
-        CHALLENGE_EXEMPT_ROUTES = ['/challenge', '/api/verify-challenge','/api/get-challenge','/api/dashboard', '/static']
+        CHALLENGE_EXEMPT_ROUTES = ['/challenge', '/api/verify-challenge','/api/get-challenge', '/api/dashboard', '/static']
 
         if any(request.path.rstrip('/').startswith(route) for route in CHALLENGE_EXEMPT_ROUTES):
             return None
@@ -97,7 +97,8 @@ def create_app():
         result = detect_ddos_advanced({
             'rate_limiting': {'threshold': 10, 'window': 60},
             'burst_detection': {'threshold': 15, 'window': 10},
-            'http_flood_detection': {'threshold': 30, 'window': 30}
+            'http_flood_detection': {'threshold': 30, 'window': 30},
+            'ml_prediction': {'enabled': True,'threshold': 0.7}
         })
 
 
@@ -143,10 +144,11 @@ def create_app():
     def challenge_page():
         return render_template('challenge.html')
 
-    @app.route('/api/get-challenge', methods=['GET'])
+    @app.route('/api/verify-challenge', methods=['GET'])
     def get_challenge_endpoint():
         ip = extract_client_ip()
         challenge_data = get_challenge_response(ip)
+        print(challenge_data)
         return jsonify(challenge_data), 200
 
     # ADD CHALLENGE VERIFICATION ENDPOINT
