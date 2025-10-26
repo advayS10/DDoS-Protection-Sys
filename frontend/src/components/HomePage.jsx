@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function HomePage() {
   const [scrollY, setScrollY] = useState(0);
@@ -20,7 +21,7 @@ export default function HomePage() {
     {
       icon: 'https://cdn-icons-png.flaticon.com/512/1041/1041916.png',
       title: 'Lightning Fast Response',
-      description: 'Automated incident response system that acts in milliseconds to contain and eliminate security threats.',
+      description: 'Automated incident response system that acts quickly to contain and eliminate security threats.',
     },
     {
       icon: 'https://cdn-icons-png.flaticon.com/512/2920/2920349.png',
@@ -28,9 +29,9 @@ export default function HomePage() {
       description: 'Comprehensive dashboard with actionable insights and detailed analytics of your security posture.',
     },
     {
-      icon: 'https://cdn-icons-png.flaticon.com/512/3179/3179068.png',
+      icon: 'https://cdn-icons-png.flaticon.com/512/3043/3043822.png',
       title: 'Network Protection',
-      description: 'Multi-layered network security with firewall protection, DDoS mitigation, and intrusion prevention.',
+      description: 'Multi-layered network security with DDoS mitigation, and intrusion prevention.',
     },
   ];
 
@@ -108,22 +109,21 @@ export default function HomePage() {
         </div>
         <nav className="flex gap-10 items-center">
           <a 
-            href="#features" 
-            className="text-white text-base font-medium transition-colors duration-300 hover:text-cyan-400 cursor-pointer"
-          >
-            Features
-          </a>
-          <a 
             href="#about"
             className="text-white text-base font-medium transition-colors duration-300 hover:text-cyan-400 cursor-pointer"
           >
             About
           </a>
-          <button 
-            className="btn-gradient text-black px-8 py-3 text-base font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-500/40"
+          <a 
+            href="#features" 
+            className="text-white text-base font-medium transition-colors duration-300 hover:text-cyan-400 cursor-pointer"
           >
-            Get Started
-          </button>
+            Features
+          </a>
+          
+          <Link to="/dashboard" className="btn-gradient text-black px-8 py-3 text-base font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-500/40 inline-block">
+             Get Started
+          </Link>
         </nav>
       </header>
 
