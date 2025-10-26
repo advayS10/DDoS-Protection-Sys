@@ -108,17 +108,18 @@ export default function HomePage() {
         </div>
         <nav className="flex gap-10 items-center">
           <a 
-            href="#features" 
-            className="text-white text-base font-medium transition-colors duration-300 hover:text-cyan-400 cursor-pointer"
-          >
-            Features
-          </a>
-          <a 
             href="#about"
             className="text-white text-base font-medium transition-colors duration-300 hover:text-cyan-400 cursor-pointer"
           >
             About
           </a>
+          <a 
+            href="#features" 
+            className="text-white text-base font-medium transition-colors duration-300 hover:text-cyan-400 cursor-pointer"
+          >
+            Features
+          </a>
+          
           <button 
             className="btn-gradient text-black px-8 py-3 text-base font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-500/40"
           >
