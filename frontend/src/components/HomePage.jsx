@@ -29,7 +29,7 @@ export default function CWatchLandingPage() {
       description: 'Comprehensive dashboard with actionable insights and detailed analytics of your security posture.',
     },
     {
-      icon: 'https://cdn-icons-png.flaticon.com/512/2910/2910791.png',
+      icon: 'https://cdn-icons-png.flaticon.com/512/3043/3043822.png',
       title: 'Network Protection',
       description: 'Multi-layered network security with firewall protection, DDoS mitigation, and intrusion prevention.',
     },
