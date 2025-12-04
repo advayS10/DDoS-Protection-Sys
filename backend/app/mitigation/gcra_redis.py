@@ -35,7 +35,7 @@ Some Error here - 24/9/2025. Time - 8:42
 '''
 
 def request_is_limited(r: redis.Redis, key: str, limit: int, period: timedelta):
-    now = r.time()[0]
+    now = int(r.time()[0])
     period_in_seconds = int(period.total_seconds())
     result = r.eval(GCRA_LUA, 1, key, now, limit, period_in_seconds)
     return result == 1  # True if request is limited

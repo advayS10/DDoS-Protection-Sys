@@ -11,13 +11,18 @@ def create_app():
     load_dotenv()
 
     app = Flask(__name__)
-    CORS(app, resources={
-        r"/api/*": {
-            "origins": ["http://localhost:5173", "http://localhost:5000"]
-        }
-    })
+    CORS(app, resources={r"/*": {"origins": ["http://localhost:5173"]}})
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI")  # main db
+    POSTGRES_DB = os.getenv("POSTGRES_DB")
+    POSTGRES_USER = os.getenv("POSTGRES_USER")
+    POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
+    POSTGRES_HOST = os.getenv("POSTGRES_HOST")
+
+    SQLALCHEMY_DATABASE_URI = (
+        f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:5432/{POSTGRES_DB}"
+    )
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI  # main db
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
@@ -64,7 +69,7 @@ def create_app():
         log_request()
 
         # ✅ STEP 0: Skip protection for challenge verification endpoint
-        CHALLENGE_EXEMPT_ROUTES = ['/challenge', '/api/verify-challenge','/api/get-challenge', '/api/dashboard', '/static']
+        CHALLENGE_EXEMPT_ROUTES = ['/challenge', '/api/verify-challenge', '/api/dashboard', '/static']
 
         if any(request.path.rstrip('/').startswith(route) for route in CHALLENGE_EXEMPT_ROUTES):
             return None
@@ -75,13 +80,13 @@ def create_app():
         # This BLOCKS all requests until challenge is solved
         if has_pending_challenge(ip):
             challenge_data = get_challenge_response(ip)
-            return redirect(url_for('challenge_page'))
-            # return jsonify({
-            #     'error': 'Challenge Required',
-            #     'message': 'You must solve the challenge before continuing',
-            #     'challenge': challenge_data,
-            #     'verify_url': '/api/verify-challenge'
-            # }), 429
+            # return redirect(url_for('challenge_page'))
+            return jsonify({
+                'error': 'Challenge Required',
+                'message': 'You must solve the challenge before continuing',
+                'challenge': get_challenge_response(ip),
+                'verify_url': '/api/verify-challenge'
+            }), 429
         
         # ✅ STEP 2: Log the request
         # log_request()

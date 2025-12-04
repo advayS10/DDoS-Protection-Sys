@@ -3,7 +3,7 @@ from datetime import timedelta
 from .gcra_redis import request_is_limited  # the modified GCRA function
 
 # Connect to Redis (adjust host/port/password as needed)
-r = redis.Redis
+r = redis.Redis()
 
 # Default GCRA settings
 LIMIT = 55          # max requests

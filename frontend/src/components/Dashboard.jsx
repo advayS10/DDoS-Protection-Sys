@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Shield, Activity, Ban, AlertTriangle, RefreshCw } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5000/api/dashboard';
+const API_BASE = '/api/dashboard';
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);

@@ -8,6 +8,7 @@ __pycache__/
 venv/
 env/
 .env
+.env.docker
 instance/
 .flaskenv
 celerybeat-schedule
