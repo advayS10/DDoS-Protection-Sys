@@ -146,6 +146,12 @@ export default function Dashboard() {
               <RefreshCw className="w-4 h-4" />
               <span>Refresh</span>
             </button>
+            <Link
+              to="/settings"
+              className="btn-gradient text-black px-8 py-3 text-base font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-500/40 inline-block text-center"
+              >
+              Settings
+            </Link>
           </div>
         </div>
       </header>
