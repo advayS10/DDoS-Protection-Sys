@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Shield, Activity, Ban, AlertTriangle, RefreshCw } from 'lucide-react';
+import { Link } from "react-router-dom";
 
 const API_BASE = '/api/dashboard';
 
@@ -147,7 +148,7 @@ export default function Dashboard() {
               <span>Refresh</span>
             </button>
             <Link
-              to="/settings"
+              to="/dashboard/settings"
               className="btn-gradient text-black px-8 py-3 text-base font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-cyan-500/40 inline-block text-center"
               >
               Settings

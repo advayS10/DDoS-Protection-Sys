@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Shield, Save, RefreshCw } from 'lucide-react';
+import { useState } from "react";
+import { Shield, Save, RefreshCw } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
@@ -9,23 +10,23 @@ export default function SettingsPage() {
     autoBlock: true,
     emailAlerts: true,
     suspiciousIPThreshold: 50,
-    ddosProtectionLevel: 'medium',
+    ddosProtectionLevel: "medium",
     rateLimitPerIP: 100,
   });
 
   const [saved, setSaved] = useState(false);
 
   const handleChange = (field, value) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
     setSaved(false);
   };
 
   const handleSave = () => {
     // Here you would typically send settings to your backend
-    console.log('Saving settings:', settings);
+    console.log("Saving settings:", settings);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
@@ -38,7 +39,7 @@ export default function SettingsPage() {
       autoBlock: true,
       emailAlerts: true,
       suspiciousIPThreshold: 50,
-      ddosProtectionLevel: 'medium',
+      ddosProtectionLevel: "medium",
       rateLimitPerIP: 100,
     });
     setSaved(false);
@@ -77,8 +78,10 @@ export default function SettingsPage() {
         <div className="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Shield className="w-8 h-8" style={{color: '#00ffaa'}} />
-              <h1 className="text-3xl font-bold text-gradient">CWatch Settings</h1>
+              <Shield className="w-8 h-8" style={{ color: "#00ffaa" }} />
+              <h1 className="text-3xl font-bold text-gradient">
+                CWatch Settings
+              </h1>
             </div>
             <div className="flex gap-4">
               <button
@@ -91,10 +94,10 @@ export default function SettingsPage() {
               <button
                 onClick={handleSave}
                 className="flex items-center space-x-2 px-6 py-3 btn-gradient text-black rounded-full hover:scale-105 transition-all duration-300 font-bold shadow-lg"
-                style={{boxShadow: '0 10px 30px rgba(0, 255, 170, 0.3)'}}
+                style={{ boxShadow: "0 10px 30px rgba(0, 255, 170, 0.3)" }}
               >
                 <Save className="w-4 h-4" />
-                <span>{saved ? 'Saved!' : 'Save Changes'}</span>
+                <span>{saved ? "Saved!" : "Save Changes"}</span>
               </button>
             </div>
           </div>
@@ -104,8 +107,10 @@ export default function SettingsPage() {
       <main className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         {/* DDoS Protection Settings */}
         <div className="card-gradient rounded-3xl border border-gradient p-8 mb-8 shadow-xl">
-          <h2 className="text-2xl font-bold text-gradient mb-6">DDoS Protection Settings</h2>
-          
+          <h2 className="text-2xl font-bold text-gradient mb-6">
+            DDoS Protection Settings
+          </h2>
+
           <div className="space-y-8">
             {/* Request Threshold */}
             <div>
@@ -118,7 +123,9 @@ export default function SettingsPage() {
                   min="10"
                   max="500"
                   value={settings.requestThreshold}
-                  onChange={(e) => handleChange('requestThreshold', parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleChange("requestThreshold", parseInt(e.target.value))
+                  }
                   className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                 />
                 <span className="text-2xl font-bold text-cyan-400 min-w-[80px] text-right">
@@ -126,7 +133,8 @@ export default function SettingsPage() {
                 </span>
               </div>
               <p className="text-xs text-gray-500 mt-2">
-                Number of requests allowed from a single IP before triggering protection
+                Number of requests allowed from a single IP before triggering
+                protection
               </p>
             </div>
 
@@ -141,7 +149,9 @@ export default function SettingsPage() {
                   min="10"
                   max="300"
                   value={settings.timeWindow}
-                  onChange={(e) => handleChange('timeWindow', parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleChange("timeWindow", parseInt(e.target.value))
+                  }
                   className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                 />
                 <span className="text-2xl font-bold text-cyan-400 min-w-[80px] text-right">
@@ -165,12 +175,14 @@ export default function SettingsPage() {
                   max="86400"
                   step="60"
                   value={settings.blockDuration}
-                  onChange={(e) => handleChange('blockDuration', parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleChange("blockDuration", parseInt(e.target.value))
+                  }
                   className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                 />
                 <span className="text-2xl font-bold text-cyan-400 min-w-[80px] text-right">
-                  {settings.blockDuration >= 3600 
-                    ? `${Math.floor(settings.blockDuration / 3600)}h` 
+                  {settings.blockDuration >= 3600
+                    ? `${Math.floor(settings.blockDuration / 3600)}h`
                     : `${Math.floor(settings.blockDuration / 60)}m`}
                 </span>
               </div>
@@ -185,14 +197,14 @@ export default function SettingsPage() {
                 DDoS Protection Level
               </label>
               <div className="grid grid-cols-3 gap-4">
-                {['low', 'medium', 'high'].map((level) => (
+                {["low", "medium", "high"].map((level) => (
                   <button
                     key={level}
-                    onClick={() => handleChange('ddosProtectionLevel', level)}
+                    onClick={() => handleChange("ddosProtectionLevel", level)}
                     className={`py-4 px-6 rounded-2xl font-bold text-sm uppercase transition-all duration-300 ${
                       settings.ddosProtectionLevel === level
-                        ? 'btn-gradient text-black shadow-lg'
-                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                        ? "btn-gradient text-black shadow-lg"
+                        : "bg-gray-800 text-gray-400 hover:bg-gray-700"
                     }`}
                   >
                     {level}
@@ -200,7 +212,8 @@ export default function SettingsPage() {
                 ))}
               </div>
               <p className="text-xs text-gray-500 mt-2">
-                Low: Minimal filtering | Medium: Balanced protection | High: Aggressive filtering
+                Low: Minimal filtering | Medium: Balanced protection | High:
+                Aggressive filtering
               </p>
             </div>
 
@@ -216,7 +229,9 @@ export default function SettingsPage() {
                   max="1000"
                   step="10"
                   value={settings.rateLimitPerIP}
-                  onChange={(e) => handleChange('rateLimitPerIP', parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleChange("rateLimitPerIP", parseInt(e.target.value))
+                  }
                   className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                 />
                 <span className="text-2xl font-bold text-cyan-400 min-w-[80px] text-right">
@@ -232,26 +247,32 @@ export default function SettingsPage() {
 
         {/* Advanced Settings */}
         <div className="card-gradient rounded-3xl border border-gradient p-8 mb-8 shadow-xl">
-          <h2 className="text-2xl font-bold text-gradient mb-6">Advanced Settings</h2>
-          
+          <h2 className="text-2xl font-bold text-gradient mb-6">
+            Advanced Settings
+          </h2>
+
           <div className="space-y-6">
             {/* Auto Block Toggle */}
             <div className="flex items-center justify-between p-4 bg-black bg-opacity-30 rounded-2xl">
               <div>
-                <h3 className="text-lg font-bold text-white">Auto-Block Suspicious IPs</h3>
+                <h3 className="text-lg font-bold text-white">
+                  Auto-Block Suspicious IPs
+                </h3>
                 <p className="text-sm text-gray-400 mt-1">
                   Automatically block IPs that exceed the threshold
                 </p>
               </div>
               <button
-                onClick={() => handleChange('autoBlock', !settings.autoBlock)}
+                onClick={() => handleChange("autoBlock", !settings.autoBlock)}
                 className={`relative w-16 h-8 rounded-full transition-all duration-300 ${
-                  settings.autoBlock ? 'bg-gradient-to-r from-cyan-500 to-green-500' : 'bg-gray-700'
+                  settings.autoBlock
+                    ? "bg-gradient-to-r from-cyan-500 to-green-500"
+                    : "bg-gray-700"
                 }`}
               >
                 <div
                   className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform duration-300 ${
-                    settings.autoBlock ? 'transform translate-x-8' : ''
+                    settings.autoBlock ? "transform translate-x-8" : ""
                   }`}
                 />
               </button>
@@ -266,21 +287,25 @@ export default function SettingsPage() {
                 </p>
               </div>
               <button
-                onClick={() => handleChange('emailAlerts', !settings.emailAlerts)}
+                onClick={() =>
+                  handleChange("emailAlerts", !settings.emailAlerts)
+                }
                 className={`relative w-16 h-8 rounded-full transition-all duration-300 ${
-                  settings.emailAlerts ? 'bg-gradient-to-r from-cyan-500 to-green-500' : 'bg-gray-700'
+                  settings.emailAlerts
+                    ? "bg-gradient-to-r from-cyan-500 to-green-500"
+                    : "bg-gray-700"
                 }`}
               >
                 <div
                   className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform duration-300 ${
-                    settings.emailAlerts ? 'transform translate-x-8' : ''
+                    settings.emailAlerts ? "transform translate-x-8" : ""
                   }`}
                 />
               </button>
             </div>
 
             {/* Geo-Blocking Toggle */}
-            <div className="flex items-center justify-between p-4 bg-black bg-opacity-30 rounded-2xl">
+            {/* <div className="flex items-center justify-between p-4 bg-black bg-opacity-30 rounded-2xl">
               <div>
                 <h3 className="text-lg font-bold text-white">Geographic Blocking</h3>
                 <p className="text-sm text-gray-400 mt-1">
@@ -299,10 +324,10 @@ export default function SettingsPage() {
                   }`}
                 />
               </button>
-            </div>
+            </div> */}
 
             {/* Geo-Blocking Toggle */}
-            <div className="flex items-center justify-between p-4 bg-black bg-opacity-30 rounded-2xl">
+            {/* <div className="flex items-center justify-between p-4 bg-black bg-opacity-30 rounded-2xl">
               <div>
                 <h3 className="text-lg font-bold text-white">Geographic Blocking</h3>
                 <p className="text-sm text-gray-400 mt-1">
@@ -321,7 +346,7 @@ export default function SettingsPage() {
                   }`}
                 />
               </button>
-            </div>
+            </div> */}
 
             {/* Suspicious IP Threshold */}
             <div>
@@ -334,7 +359,12 @@ export default function SettingsPage() {
                   min="10"
                   max="200"
                   value={settings.suspiciousIPThreshold}
-                  onChange={(e) => handleChange('suspiciousIPThreshold', parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleChange(
+                      "suspiciousIPThreshold",
+                      parseInt(e.target.value)
+                    )
+                  }
                   className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                 />
                 <span className="text-2xl font-bold text-cyan-400 min-w-[80px] text-right">
